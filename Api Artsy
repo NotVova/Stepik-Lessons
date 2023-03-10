@@ -1,0 +1,34 @@
+import requests
+import json
+
+artists_dict = {}
+
+#нужно ввести клиент id и секрет
+
+client_id = '____'
+client_secret = '_____'
+
+r = requests.post('https://api.artsy.net/api/tokens/xapp_token',
+                  data={
+                      "client_id": client_id,
+                      "client_secret": client_secret,
+                  })
+
+j = json.loads(r.text)
+
+token = j['token']
+headers = {"X-Xapp-Token": token}
+
+# В строку ******** нужно ввести имя файла с которого будут считаны идентификаторы авторов
+
+with open('********', 'r') as r:
+    for artist in r:
+        res = requests.get(f"https://api.artsy.net/api/artists/{artist.strip()}", headers=headers)
+        res.encoding = 'utf-8'
+        jes = json.loads(res.text)
+        artists_dict[jes['sortable_name']] = jes['birthday']
+
+
+artists_dict = sorted(artists_dict.items(), key=lambda x: (x[1], x[0]))
+for artist in artists_dict:
+    print(str(artist)[2: -10])
