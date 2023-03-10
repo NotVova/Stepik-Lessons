@@ -1,0 +1,13 @@
+import requests
+
+#в строку ******* нужно ввести имя файла с которого будут считаны числа
+
+with open('*******', 'r') as r:
+    for number in r:
+        res = requests.get(f'http://numbersapi.com/{int(number)}/math?json=true')
+        data = res.json()
+
+        if data['found']:
+            print('Interesting')
+        else:
+            print('Boring')
